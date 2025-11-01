@@ -1,0 +1,40 @@
+package com.example.jwt_project.service;
+
+
+import com.example.jwt_project.model.Users;
+import com.example.jwt_project.repo.UserRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepo userRepo;
+
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+    @Autowired
+    private JWTokenService jwTokenService;
+
+    public Users register (Users user){
+        user.setPassword(encoder.encode(user.getPassword()));
+        return  userRepo.save(user);
+    }
+
+    public  String verify(Users user){
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));
+    if(authentication.isAuthenticated()){
+        return  jwTokenService.generatetoken(user.getUsername());
+
+    }
+    return "fails";
+
+    }
+}
