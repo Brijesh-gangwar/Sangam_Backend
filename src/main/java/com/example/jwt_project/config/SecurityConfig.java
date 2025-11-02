@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.http.HttpMethod;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,7 +34,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
     return httpSecurity.csrf(customizer -> customizer.disable())
-        .authorizeHttpRequests(request -> request.requestMatchers("/register", "/login").permitAll()
+        .authorizeHttpRequests(request -> request
+            .requestMatchers("/register", "/login").permitAll()
+            .requestMatchers(HttpMethod.GET, "/students").hasAnyRole("USER", "ADMIN")
+            .requestMatchers(HttpMethod.POST, "/students").hasRole("ADMIN")
             .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
@@ -41,28 +45,8 @@ public class SecurityConfig {
         .build();
 
 
-        // httpSecurity.formLogin(Customizer.withDefaults());
-//        Customizer<CsrfConfigurer<HttpSecurity>> cust = new Customizer<CsrfConfigurer<HttpSecurity>>() {
-//            @Override
-//            public void customize(CsrfConfigurer<HttpSecurity> customizer) {
-//                customizer.disable();
-//            }
-//        };
-//httpSecurity.csrf(cust);
-
-//        return httpSecurity.build();
     }
 
-//    @Bean
-//    public UserDetailsService userDetailsService(){
-//
-//        UserDetails user1= User.withDefaultPasswordEncoder().username("gang").password("1234").roles("USER").build();
-//
-//        UserDetails user2= User.withDefaultPasswordEncoder().username("me").password("1234").roles("ADMIN").build();
-//
-//
-//        return  new InMemoryUserDetailsManager(user1,user2);
-//    }
 
 
 

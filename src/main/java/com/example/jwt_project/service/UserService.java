@@ -25,6 +25,10 @@ public class UserService {
 
     public Users register (Users user){
         user.setPassword(encoder.encode(user.getPassword()));
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            // default to USER role
+            user.setRoles(java.util.List.of("ROLE_USER"));
+        }
         return  userRepo.save(user);
     }
 

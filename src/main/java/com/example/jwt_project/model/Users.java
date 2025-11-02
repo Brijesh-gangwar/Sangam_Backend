@@ -11,6 +11,7 @@ public class Users {
 
     private String username;
     private String password;
+    private java.util.List<String> roles;
 
     public Users() {}
 
@@ -36,6 +37,14 @@ public class Users {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public java.util.List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(java.util.List<String> roles) {
+        this.roles = roles;
     }
 
     @Override

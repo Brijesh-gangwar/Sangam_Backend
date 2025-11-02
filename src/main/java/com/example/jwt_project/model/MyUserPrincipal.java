@@ -19,7 +19,19 @@ public class MyUserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton( new SimpleGrantedAuthority("USER"));
+        java.util.List<String> roles = user.getRoles();
+        if (roles == null || roles.isEmpty()) {
+            // default role
+            return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+
+        java.util.List<SimpleGrantedAuthority> authorities = new java.util.ArrayList<>();
+        for (String r : roles) {
+            // ensure role names are prefixed with ROLE_
+            String roleName = r.startsWith("ROLE_") ? r : ("ROLE_" + r);
+            authorities.add(new SimpleGrantedAuthority(roleName));
+        }
+        return authorities;
     }
 
     @Override
