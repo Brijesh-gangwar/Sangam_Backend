@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,6 +21,7 @@ public class StudentController {
     ));
 
     @GetMapping("/students")
+    @PreAuthorize("hasAuthority('PERM_STUDENTS_READ')")
     public List<Student> getstudent(){
         return  students;
 
@@ -31,6 +33,7 @@ public class StudentController {
     }
 
     @PostMapping("/students")
+    @PreAuthorize("hasAuthority('PERM_STUDENTS_WRITE')")
     public  Student addStudent(@RequestBody Student student){
         students.add(student);
         return student ;
