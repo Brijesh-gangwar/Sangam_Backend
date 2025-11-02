@@ -1,7 +1,7 @@
 package com.example.jwt_project.config;
 
 
-import com.example.jwt_project.model.MyUserPrincipal;
+
 import com.example.jwt_project.service.JWTokenService;
 import com.example.jwt_project.service.MyUserDetailsService;
 import jakarta.servlet.FilterChain;
