@@ -10,6 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -41,4 +44,45 @@ public class UserService {
     return "fails";
 
     }
+
+
+    // Add a role to a user
+    public Users addRole(String userId, String role) {
+        Optional<Users> existingUser = userRepo.findById(userId);
+
+        if (existingUser.isEmpty()) {
+            throw new RuntimeException("User not found with id: " + userId);
+        }
+
+        Users user = existingUser.get();
+        if (user.getRoles() == null) {
+            user.setRoles(new ArrayList<>());
+        }
+
+        if (!user.getRoles().contains(role)) {
+            user.getRoles().add(role);
+        } else {
+            throw new RuntimeException("User already has role: " + role);
+        }
+
+        return userRepo.save(user);
+    }
+
+    // Remove a role from a user
+    public Users removeRole(String userId, String role) {
+        Optional<Users> existingUser = userRepo.findById(userId);
+
+        if (existingUser.isEmpty()) {
+            throw new RuntimeException("User not found with id: " + userId);
+        }
+
+        Users user = existingUser.get();
+        if (user.getRoles() == null || !user.getRoles().contains(role)) {
+            throw new RuntimeException("User does not have role: " + role);
+        }
+
+        user.getRoles().remove(role);
+        return userRepo.save(user);
+    }
+
 }

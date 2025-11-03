@@ -38,8 +38,8 @@ public class SecurityConfig {
     return httpSecurity.csrf(customizer -> customizer.disable())
         .authorizeHttpRequests(request -> request
             .requestMatchers("/register", "/login").permitAll()
-            .requestMatchers(HttpMethod.GET, "/students").hasAnyRole("USER", "ADMIN")
-            .requestMatchers(HttpMethod.POST, "/students").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.GET, "/").hasAnyRole("PROJECT_HEAD", "ADMIN","DEPT_HEAD")
+            .requestMatchers(HttpMethod.GET, "/me").hasRole("ADMIN")
             .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

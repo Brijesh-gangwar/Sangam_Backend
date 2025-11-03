@@ -21,13 +21,16 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // create or update default roles so existing DB entries get missing permissions
+
+        // ADMIN ROLE
         List<String> adminPerms = Arrays.asList(
-                Permission.STUDENTS_READ.name(),
-                Permission.STUDENTS_WRITE.name(),
-                Permission.TODOS_CREATE.name(),
                 Permission.USERS_MANAGE.name(),
-                Permission.TODOS_READ.name()
+                Permission.DEPT_READALL.name(),
+                Permission.DEPT_READBYID.name(),
+                Permission.DEPT_DELETE.name(),
+                Permission.DEPT_CREATE.name(),
+                Permission.USER_ROLEADD.name(),
+                Permission.USER_ROLEREM.name()
 
         );
 
@@ -43,9 +46,10 @@ public class DataLoader implements CommandLineRunner {
             roleRepo.save(admin);
         }
 
+
+        // USER ROLE
         List<String> userPerms = Arrays.asList(
-                Permission.STUDENTS_READ.name(),
-                Permission.TODOS_READ.name()
+                Permission.DEPT_READALL.name()
         );
 
         Role user = roleRepo.findByName("USER");
@@ -59,6 +63,46 @@ public class DataLoader implements CommandLineRunner {
             user.setPermissions(new ArrayList<>(merged));
             roleRepo.save(user);
         }
+
+
+        // DEPT_HEAD ROLE
+        List<String> deptHeadPerms = Arrays.asList(
+                Permission.DEPT_READALL.name(),
+                Permission.DEPT_READBYID.name()
+        );
+
+        Role dept_head = roleRepo.findByName("DEPT_HEAD");
+        if (dept_head == null) {
+            dept_head = new Role("DEPT_HEAD", new ArrayList<>(deptHeadPerms));
+            roleRepo.save(dept_head);
+        } else {
+            Set<String> merged = new LinkedHashSet<>();
+            if (dept_head.getPermissions() != null) merged.addAll(dept_head.getPermissions());
+            merged.addAll(deptHeadPerms);
+            dept_head.setPermissions(new ArrayList<>(merged));
+            roleRepo.save(dept_head);
+        }
+
+
+
+        // PROJECT_HEAD ROLE
+        List<String> projectHeadPerms = Arrays.asList(
+                Permission.DEPT_READALL.name()
+        );
+
+        Role project_head = roleRepo.findByName("PROJECT_HEAD");
+        if (project_head == null) {
+            project_head = new Role("PROJECT_HEAD", new ArrayList<>(projectHeadPerms));
+            roleRepo.save(project_head);
+        } else {
+            Set<String> merged = new LinkedHashSet<>();
+            if (project_head.getPermissions() != null) merged.addAll(project_head.getPermissions());
+            merged.addAll(projectHeadPerms);
+            project_head.setPermissions(new ArrayList<>(merged));
+            roleRepo.save(project_head);
+        }
+
+
     }
 
 }
