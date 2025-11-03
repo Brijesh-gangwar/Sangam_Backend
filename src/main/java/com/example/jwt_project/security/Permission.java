@@ -9,7 +9,8 @@ public enum Permission {
     DEPT_DELETE,
     DEPT_CREATE,
     USER_ROLEADD,
-    USER_ROLEREM
+    USER_ROLEREM,
+    USER_VIEWALL
 
 
 }

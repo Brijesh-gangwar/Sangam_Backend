@@ -34,6 +34,17 @@ public class UserController {
     }
 
 
+    // get all users details 
+    @GetMapping("/user/all")
+    @PreAuthorize("hasAuthority('PERM_USER_VIEWALL')")
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            return ResponseEntity.ok(userService.getAllUsers());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
     // Add roles to user by ID
     @PutMapping("/user/{id}/roles/add")
     @PreAuthorize("hasAuthority('PERM_USER_ROLEADD')")
@@ -57,5 +68,7 @@ public class UserController {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
+
+
 
 }

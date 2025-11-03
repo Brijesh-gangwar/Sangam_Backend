@@ -30,7 +30,8 @@ public class DataLoader implements CommandLineRunner {
                 Permission.DEPT_DELETE.name(),
                 Permission.DEPT_CREATE.name(),
                 Permission.USER_ROLEADD.name(),
-                Permission.USER_ROLEREM.name()
+                Permission.USER_ROLEREM.name(),
+                Permission.USER_VIEWALL.name()
 
         );
 

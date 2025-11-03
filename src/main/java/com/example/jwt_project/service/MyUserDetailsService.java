@@ -12,21 +12,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class MyUserDetailsService implements UserDetailsService {
 
-  @Autowired
-  private UserRepo userRepo;
+    @Autowired
+    private UserRepo userRepo;
 
-  @Autowired
-  private AuthorityService authorityService;
+    @Autowired
+    private AuthorityService authorityService;
 
-  @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    Users user = userRepo.findByUsername(username);
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Users user = userRepo.findByUsername(username);
 
-    if (user == null) {
-      System.out.println("user not found");
-      throw new UsernameNotFoundException("user not found");
+        if (user == null) {
+            System.out.println("user not found");
+            throw new UsernameNotFoundException("user not found");
+        }
+
+        return new User(user.getUsername(), user.getPassword(), authorityService.buildAuthorities(user.getRoles()));
     }
-
-    return new User(user.getUsername(), user.getPassword(), authorityService.buildAuthorities(user.getRoles()));
-  }
 }
