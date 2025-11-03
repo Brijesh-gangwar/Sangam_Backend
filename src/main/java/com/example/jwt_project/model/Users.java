@@ -8,7 +8,6 @@ public class Users {
 
     @Id
     private String id;
-
     private String username;
     private String password;
     private java.util.List<String> roles;

@@ -60,12 +60,15 @@
               "// Capture JWT returned as raw text or JSON {\"token\": \"...\"}",
               "const token = pm.response.text().trim();",
               "if (token) {",
-              "    pm.environment.set('jwt', token);",
-              "    console.log('Saved jwt from raw response');",
+              "    pm.environment.set('jwt', token.replace(/^\"|\"$/g, ''));",
+              "    // admin expects success for both GET and POST todos",
+              "    pm.environment.set('expected_todos_get_status', '200');",
+              "    pm.environment.set('expected_todos_post_status', '200');",
+              "    console.log('Saved jwt from raw response (admin)');",
               "} else {",
               "    try {",
               "        const body = pm.response.json();",
-              "        if (body && body.token) { pm.environment.set('jwt', body.token); console.log('Saved jwt from JSON token'); }",
+              "        if (body && body.token) { pm.environment.set('jwt', body.token); pm.environment.set('expected_todos_get_status', '200'); pm.environment.set('expected_todos_post_status', '200'); console.log('Saved jwt from JSON token (admin)'); }",
               "    } catch (e) { console.log('No token found in response'); }",
               "}"
             ],
@@ -95,7 +98,18 @@
           "script": {
             "exec": [
               "const token = pm.response.text().trim();",
-              "if (token) { pm.environment.set('jwt', token); console.log('Saved jwt'); } else { try { const body = pm.response.json(); if (body && body.token) pm.environment.set('jwt', body.token); } catch(e){} }"
+              "if (token) {",
+              "    pm.environment.set('jwt', token.replace(/^\"|\"$/g, ''));",
+              "    // normal user: can read todos but cannot create",
+              "    pm.environment.set('expected_todos_get_status', '200');",
+              "    pm.environment.set('expected_todos_post_status', '403');",
+              "    console.log('Saved jwt from raw response (user)');",
+              "} else {",
+              "    try {",
+              "        const body = pm.response.json();",
+              "        if (body && body.token) { pm.environment.set('jwt', body.token); pm.environment.set('expected_todos_get_status', '200'); pm.environment.set('expected_todos_post_status', '403'); console.log('Saved jwt from JSON token (user)'); }",
+              "    } catch(e){}",
+              "}"
             ],
             "type": "text/javascript"
           }
@@ -126,17 +140,32 @@
     }
     ,
     {
-      "name": "Get Todos (protected)",
+      "name": "Get Todos (PERM_TODOS_READ)",
       "request": {
         "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{jwt}}", "type": "string" } ] },
         "method": "GET",
         "header": [],
         "url": { "raw": "http://localhost:8080/todos", "protocol": "http", "host": [ "localhost" ], "port": "8080", "path": [ "todos" ] }
       },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const expected = parseInt(pm.environment.get('expected_todos_get_status') || '200', 10);",
+              "pm.test('Status is ' + expected, function () { pm.expect(pm.response.code).to.eql(expected); });",
+              "if (expected === 200) {",
+              "  pm.test('Response is array', function () { pm.expect(pm.response.json()).to.be.an('array'); });",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
       "response": []
     },
     {
-      "name": "Create Todo (protected)",
+      "name": "Create Todo (PERM_TODOS_CREATE)",
       "request": {
         "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{jwt}}", "type": "string" } ] },
         "method": "POST",
@@ -144,6 +173,21 @@
         "body": { "mode": "raw", "raw": "{\n  \"title\": \"Buy milk\",\n  \"content\": \"Remember to buy milk from store\"\n}", "options": { "raw": { "language": "json" } } },
         "url": { "raw": "http://localhost:8080/todos", "protocol": "http", "host": [ "localhost" ], "port": "8080", "path": [ "todos" ] }
       },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const expected = parseInt(pm.environment.get('expected_todos_post_status') || '200', 10);",
+              "pm.test('Status is ' + expected, function () { pm.expect(pm.response.code).to.eql(expected); });",
+              "if (expected === 200) {",
+              "  pm.test('Created todo has id', function () { const body = pm.response.json(); pm.expect(body).to.have.property('id'); });",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
       "response": []
     }
   ]

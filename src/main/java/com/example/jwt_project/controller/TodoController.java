@@ -18,13 +18,13 @@ public class TodoController {
     private TodoRepo todoRepo;
 
     @GetMapping("/todos")
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @PreAuthorize("hasAuthority('PERM_TODOS_READ')")
     public List<Todo> getTodos() {
         return todoRepo.findAll();
     }
 
     @PostMapping("/todos")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('PERM_TODOS_CREATE')")
     public Todo createTodo(@RequestBody Todo todo) {
         return todoRepo.save(todo);
     }

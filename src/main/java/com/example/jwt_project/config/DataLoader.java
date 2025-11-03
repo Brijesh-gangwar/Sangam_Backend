@@ -26,7 +26,9 @@ public class DataLoader implements CommandLineRunner {
                 Permission.STUDENTS_READ.name(),
                 Permission.STUDENTS_WRITE.name(),
                 Permission.TODOS_CREATE.name(),
-                Permission.USERS_MANAGE.name()
+                Permission.USERS_MANAGE.name(),
+                Permission.TODOS_READ.name()
+
         );
 
         Role admin = roleRepo.findByName("ADMIN");
@@ -58,4 +60,5 @@ public class DataLoader implements CommandLineRunner {
             roleRepo.save(user);
         }
     }
+
 }
