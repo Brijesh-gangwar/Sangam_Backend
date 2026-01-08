@@ -2,6 +2,8 @@ package com.example.jwt_project.model;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.annotation.Id;
 
+import java.util.List;
+
 @Document(collection = "departments")
 public class Department {
 
@@ -11,6 +13,11 @@ public class Department {
     private String name;
     private String location;
     private String departmentHeadId;
+
+
+    private List<String> projectList;
+
+    private List<String> departmentMembers;
 
     // getters and setters
     public String getId() {
@@ -45,12 +52,30 @@ public class Department {
         this.location = location;
     }
 
+    public List<String> getDepartmentMembers() {
+        return departmentMembers;
+    }
+
+    public void setDepartmentMembers(List<String> departmentMembers) {
+        this.departmentMembers = departmentMembers;
+    }
+
+    public List<String> getProjectList() {
+        return projectList;
+    }
+
+    public void setProjectList(List<String> projectList) {
+        this.projectList = projectList;
+    }
+
     // all args constructors
-    public Department(String id, String name, String location, String departmentHeadId) {
+    public Department(String id, String name, String location, String departmentHeadId, List<String> projectList, List<String> departmentMembers) {
         this.id = id;
         this.name = name;
         this.location = location;
         this.departmentHeadId = departmentHeadId;
+        this.projectList = projectList;
+        this.departmentMembers = departmentMembers;
     }
 
     // no args constructor

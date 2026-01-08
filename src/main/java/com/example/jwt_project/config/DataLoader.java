@@ -31,7 +31,9 @@ public class DataLoader implements CommandLineRunner {
                 Permission.DEPT_CREATE.name(),
                 Permission.USER_ROLEADD.name(),
                 Permission.USER_ROLEREM.name(),
-                Permission.USER_VIEWALL.name()
+                Permission.USER_VIEWALL.name(),
+                Permission.PROJECT_READ.name(),
+                Permission.PROJECT_DELETE.name()
 
         );
 
@@ -50,7 +52,8 @@ public class DataLoader implements CommandLineRunner {
 
         // USER ROLE
         List<String> userPerms = Arrays.asList(
-                Permission.DEPT_READALL.name()
+                Permission.DEPT_READALL.name(),
+                Permission.PROJECT_READ.name()
         );
 
         Role user = roleRepo.findByName("USER");
@@ -69,7 +72,10 @@ public class DataLoader implements CommandLineRunner {
         // DEPT_HEAD ROLE
         List<String> deptHeadPerms = Arrays.asList(
                 Permission.DEPT_READALL.name(),
-                Permission.DEPT_READBYID.name()
+                Permission.DEPT_READBYID.name(),
+                Permission.PROJECT_CREATE.name(),
+                Permission.PROJECT_UPDATE.name(),
+                Permission.PROJECT_READ.name()
         );
 
         Role dept_head = roleRepo.findByName("DEPT_HEAD");
@@ -88,8 +94,10 @@ public class DataLoader implements CommandLineRunner {
 
         // PROJECT_HEAD ROLE
         List<String> projectHeadPerms = Arrays.asList(
-                Permission.DEPT_READALL.name()
-        );
+                Permission.DEPT_READALL.name(),
+                Permission.PROJECT_READ.name()
+
+                );
 
         Role project_head = roleRepo.findByName("PROJECT_HEAD");
         if (project_head == null) {

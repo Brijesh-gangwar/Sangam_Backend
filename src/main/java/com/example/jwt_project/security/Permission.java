@@ -10,7 +10,11 @@ public enum Permission {
     DEPT_CREATE,
     USER_ROLEADD,
     USER_ROLEREM,
-    USER_VIEWALL
+    USER_VIEWALL,
+    PROJECT_CREATE,
+    PROJECT_READ,
+    PROJECT_DELETE,
+    PROJECT_UPDATE
 
 
 }
